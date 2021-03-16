@@ -52,7 +52,9 @@ void GasContainer::CheckParticleCollision() {
   for (std::pair<vec2, vec2> &particle : particles_) {
     for (std::pair<vec2, vec2> &particle_compare : particles_) {
       if (ParticlesAreColliding(particle, particle_compare)) {
-        //DO CALCULATION
+        std::pair<vec2, vec2> new_v = CalculateVelocityAfterCollision(particle, particle_compare);
+        particle.second = new_v.first;
+        particle_compare.second = new_v.second;
       }
     }
   }
@@ -80,6 +82,14 @@ std::pair<vec2, vec2> GasContainer::CalculateVelocityAfterCollision(std::pair<ve
   float dot_product_over_magnitude_p1 = dot_product_p1 / magnitude_p1;
   vec2 right_side_p1 = dot_product_over_magnitude_p1 * (p1.first - p2.first);
   vec2 final_v_p1 = p1.second - right_side_p1;
+
+  float dot_product_p2 = glm::dot((p2.first - p1.first),(p2.second - p1.second));
+  double magnitude_p2 = std::pow((p2.first - p1.first).length(),2);
+  float dot_product_over_magnitude_p2 = dot_product_p2 / magnitude_p2;
+  vec2 right_side_p2 = dot_product_over_magnitude_p2 * (p2.first - p1.first);
+  vec2 final_v_p2 = p2.second - right_side_p2;
+
+  return {final_v_p1, final_v_p2};
 }
 
 std::pair<glm::vec2, glm::vec2> GasContainer::GenerateRandomParticle() {
