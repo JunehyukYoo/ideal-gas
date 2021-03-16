@@ -6,18 +6,20 @@ namespace idealgas {
 using glm::vec2;
 
 GasContainer::GasContainer(int num_particles) {
-  for (int i = 0; i < num_particles; i++) {
+  for (size_t i = 0; i < num_particles; i++) {
     particles_.push_back(GenerateRandomParticle());
   }
 }
 
+GasContainer::GasContainer() {}
+
 void GasContainer::Display() const {
   // This function has a lot of magic numbers; be sure to design your code in a way that avoids this.
   for (const auto& particle : particles_) {
-    ci::gl::color(ci::Color("orange"));
+    ci::gl::color(ci::Color(RandomColorPicker()));
     ci::gl::drawSolidCircle(particle.first, kRadius);
   }
-  ci::gl::color(ci::Color("white"));
+  ci::gl::color(ci::Color(kBorderColor));
   ci::gl::drawStrokedRect(ci::Rectf(kFirstPoint, kSecondPoint));
 }
 
@@ -104,6 +106,18 @@ double GasContainer::GenerateRandomDouble(double lower_bound, double upper_bound
   std::default_random_engine eng(rd());
   std::uniform_real_distribution<double> distribution(lower_bound, upper_bound);
   return distribution(eng);
+}
+
+ci::Color GasContainer::RandomColorPicker() const {
+  return kPossibleColors[static_cast<int>(GenerateRandomDouble(0, kPossibleColors.size()))];
+}
+
+std::vector<std::pair<glm::vec2, glm::vec2>> GasContainer::GetParticles() {
+  return particles_;
+}
+
+void GasContainer::AddParticles(std::pair<glm::vec2, glm::vec2> particle) {
+  particles_.push_back(particle);
 }
 
 }  // namespace idealgas

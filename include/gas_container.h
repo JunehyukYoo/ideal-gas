@@ -14,6 +14,8 @@ class GasContainer {
  public:
   GasContainer(int num_particles);
 
+  GasContainer();
+
   /**
    * Displays the container walls and the current positions of the particles.
    */
@@ -69,11 +71,27 @@ class GasContainer {
    */
   double GenerateRandomDouble(double lower_bound, double upper_bound) const;
 
+  /**
+   * Returns a random color for a particle.
+   * @return Random color.
+   */
+  ci::Color RandomColorPicker() const;
+
+  /**
+   * Gets the list of all particles in the container for testing purposes.
+   * @return the list of all particles.
+   */
+  std::vector<std::pair<glm::vec2, glm::vec2>> GetParticles();
+
+  void AddParticles(std::pair<glm::vec2, glm::vec2> particle);
+
  private:
   std::vector<std::pair<glm::vec2, glm::vec2>> particles_;
   int kRadius = 10;
   vec2 kFirstPoint = vec2(100, 100);
   vec2 kSecondPoint = vec2(600, 600);
+  ci::Color kBorderColor = ci::Color("white");
+  std::vector<ci::Color> kPossibleColors = {ci::Color("orange"), ci::Color("red"), ci::Color("green"), ci::Color("blue")};
 };
 
 }  // namespace idealgas
