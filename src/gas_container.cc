@@ -6,15 +6,19 @@ namespace idealgas {
 using glm::vec2;
 
 GasContainer::GasContainer(int num_particles) {
-  for (int i = 0; i <= num_particles; i++) {
+  for (int i = 0; i < num_particles; i++) {
     particles_.push_back(GenerateRandomParticle());
+    std::cout << "count = " << i << std::endl;
   }
+  //Print();
 }
 
 void GasContainer::Display() const {
   // This function has a lot of magic numbers; be sure to design your code in a way that avoids this.
-  ci::gl::color(ci::Color("orange"));
-  ci::gl::drawSolidCircle(p1_position, 10);
+  for (const auto& particle : particles_) {
+    ci::gl::color(ci::Color("orange"));
+    ci::gl::drawSolidCircle(particle.first, kRadius);
+  }
   ci::gl::color(ci::Color("white"));
   ci::gl::drawStrokedRect(ci::Rectf(kFirstPoint, kSecondPoint));
 }
@@ -33,16 +37,18 @@ void GasContainer::AdvanceOneFrame() {
     p1_position += p1_velocity;
   }
    */
-   CheckWallContact(particles_);
+   CheckWallContact();
+   std::cout << "UPDATE\n";
 }
-void GasContainer::CheckWallContact(
-    std::vector<std::pair<glm::vec2, glm::vec2>> particles) {
-  for (auto& particle : particles) {
-    if (particle.first.x <= kFirstPoint.x || particle.first.x >= kSecondPoint.x) {
-      particle.second = vec2(-1 * particle.second.x, particle.second.y);
+void GasContainer::CheckWallContact() {
+  for (std::pair<glm::vec2, glm::vec2> &particle : particles_) {
+    glm::vec2 position = particle.first;
+    glm::vec2 velocity = particle.second;
+    if (position.x <= kFirstPoint.x || position.x >= kSecondPoint.x) {
+      particle.second = vec2(-1 * velocity.x, velocity.y);
       particle.first += particle.second;
-    } else if (particle.first.y <= kFirstPoint.y || particle.first.y >= kSecondPoint.y) {
-      particle.second = vec2(particle.second.x, -1 * particle.second.y);
+    } else if (position.y <= kFirstPoint.y || position.y >= kSecondPoint.y) {
+      particle.second = vec2(velocity.x, -1 * velocity.y);
       particle.first += particle.second;
     } else {
       particle.first += particle.second;
@@ -50,17 +56,31 @@ void GasContainer::CheckWallContact(
   }
 }
 
+void GasContainer::CheckParticleCollision() {
+
+}
+
 std::pair<glm::vec2, glm::vec2> GasContainer::GenerateRandomParticle() {
-  vec2 position(GenerateRandomDouble(kFirstPoint.x, kSecondPoint.x), GenerateRandomDouble(kFirstPoint.y, kSecondPoint.y));
-  vec2 velocity(GenerateRandomDouble(0, kSmallestRadius/4), GenerateRandomDouble(0, kSmallestRadius/4));
+  vec2 position = vec2(GenerateRandomDouble(kFirstPoint.x + kRadius, kSecondPoint.x - kRadius),
+                       GenerateRandomDouble(kFirstPoint.y + kRadius, kSecondPoint.y - kRadius));
+  vec2 velocity = vec2(GenerateRandomDouble(1, kRadius),
+                       GenerateRandomDouble(1, kRadius));
   return {position, velocity};
 }
 
-//code derived from: https://stackoverflow.com/questions/2704521/generate-random-double-numbers-in-c/9324796
-double GasContainer::GenerateRandomDouble(double lower_bound, double upper_bound) {
-  std::uniform_real_distribution<double> unif(lower_bound,upper_bound);
-  std::default_random_engine re;
-  return unif(re);
+//code derived from: https://www.delftstack.com/howto/cpp/how-to-generate-random-doubles-cpp/
+double GasContainer::GenerateRandomDouble(double lower_bound, double upper_bound) const {
+  std::random_device rd;
+  std::default_random_engine eng(rd());
+  std::uniform_real_distribution<double> distribution(lower_bound, upper_bound);
+  return distribution(eng);
 }
 
+void GasContainer::Print() {
+  for (auto particle : particles_) {
+    std::cout << "Position = (" + std::to_string(particle.first.x) + ", " + std::to_string(particle.first.y) + ")" << std::endl;
+    std::cout << "Velocity = (" + std::to_string(particle.second.x) + ", " + std::to_string(particle.second.y) + ")" << std::endl;
+    std::cout << "\n";
+  }
+}
 }  // namespace idealgas
