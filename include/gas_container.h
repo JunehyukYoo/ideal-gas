@@ -69,16 +69,8 @@ class GasContainer {
    */
   double GenerateRandomDouble(double lower_bound, double upper_bound) const;
 
-  /**
-   * Prints the current position and velocity of all particles in the
-   * container.
-   */
-  void Print();
-
  private:
   std::vector<std::pair<glm::vec2, glm::vec2>> particles_;
-  //vec2 p1_position = vec2(200, 200);
-  //vec2 p1_velocity = vec2(1.2, 0);
   int kRadius = 10;
   vec2 kFirstPoint = vec2(100, 100);
   vec2 kSecondPoint = vec2(600, 600);

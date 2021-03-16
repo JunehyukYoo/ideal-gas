@@ -8,9 +8,7 @@ using glm::vec2;
 GasContainer::GasContainer(int num_particles) {
   for (int i = 0; i < num_particles; i++) {
     particles_.push_back(GenerateRandomParticle());
-    std::cout << "count = " << i << std::endl;
   }
-  //Print();
 }
 
 void GasContainer::Display() const {
@@ -108,11 +106,4 @@ double GasContainer::GenerateRandomDouble(double lower_bound, double upper_bound
   return distribution(eng);
 }
 
-void GasContainer::Print() {
-  for (auto particle : particles_) {
-    std::cout << "Position = (" + std::to_string(particle.first.x) + ", " + std::to_string(particle.first.y) + ")" << std::endl;
-    std::cout << "Velocity = (" + std::to_string(particle.second.x) + ", " + std::to_string(particle.second.y) + ")" << std::endl;
-    std::cout << "\n";
-  }
-}
 }  // namespace idealgas
