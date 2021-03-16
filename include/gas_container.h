@@ -81,7 +81,7 @@ class GasContainer {
   //vec2 p1_velocity = vec2(1.2, 0);
   int kRadius = 10;
   vec2 kFirstPoint = vec2(100, 100);
-  vec2 kSecondPoint = vec2(600, 400);
+  vec2 kSecondPoint = vec2(600, 600);
 };
 
 }  // namespace idealgas
