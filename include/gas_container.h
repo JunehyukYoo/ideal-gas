@@ -31,7 +31,27 @@ class GasContainer {
    */
   void CheckWallContact();
 
+  /**
+   * Checks if any particles are colliding with each other. If so, change the
+   * velocity of colliding particles.
+   */
   void CheckParticleCollision();
+
+  /**
+   * Checks if two particles are colliding.
+   * @param p1 The first particle to compare.
+   * @param p2 The second particle to compare.
+   * @return A boolean value.
+   */
+  bool ParticlesAreColliding(std::pair<vec2, vec2> p1, std::pair<vec2, vec2> p2);
+
+  /**
+   * Changes the velocities of colliding particles.
+   * @param p1 The first particle.
+   * @param p2 The second particle.
+   * @return New velocity of p1 and p2 as a pair in that order.
+   */
+  std::pair<vec2, vec2> CalculateVelocityAfterCollision(std::pair<vec2, vec2> p1, std::pair<vec2, vec2> p2);
 
   /**
    * Generates a particle with a random position in the container and random

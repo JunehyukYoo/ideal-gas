@@ -24,30 +24,22 @@ void GasContainer::Display() const {
 }
 
 void GasContainer::AdvanceOneFrame() {
-  /**
-  if (p1_position.x <= kFirstPoint.x || p1_position.x >= kSecondPoint.x) {
-    std::cout << "AHHH" << std::endl;
-    p1_velocity = vec2(-1 * p1_velocity.x, p1_velocity.y);
-    p1_position += p1_velocity;
-  } else if (p1_position.y <= kFirstPoint.y || p1_position.y >= kSecondPoint.y) {
-    std::cout << "AHHH" << std::endl;
-    p1_velocity = vec2(p1_velocity.x, -1 * p1_velocity.y);
-    p1_position += p1_velocity;
-  } else {
-    p1_position += p1_velocity;
-  }
-   */
    CheckWallContact();
-   std::cout << "UPDATE\n";
+   CheckParticleCollision();
 }
+
 void GasContainer::CheckWallContact() {
-  for (std::pair<glm::vec2, glm::vec2> &particle : particles_) {
-    glm::vec2 position = particle.first;
-    glm::vec2 velocity = particle.second;
-    if (position.x <= kFirstPoint.x || position.x >= kSecondPoint.x) {
+  for (std::pair<vec2, vec2> &particle : particles_) {
+    vec2 position = particle.first;
+    vec2 velocity = particle.second;
+    if ((position.x <= kFirstPoint.x + kRadius || position.x >= kSecondPoint.x - kRadius) &&
+        (position.y <= kFirstPoint.y + kRadius || position.y >= kSecondPoint.y - kRadius)) {
+      particle.second = vec2(-1 * velocity.x, -1 * velocity.y);
+      particle.first += particle.second;
+    } else if (position.x <= kFirstPoint.x + kRadius || position.x >= kSecondPoint.x - kRadius) {
       particle.second = vec2(-1 * velocity.x, velocity.y);
       particle.first += particle.second;
-    } else if (position.y <= kFirstPoint.y || position.y >= kSecondPoint.y) {
+    } else if (position.y <= kFirstPoint.y + kRadius || position.y >= kSecondPoint.y - kRadius) {
       particle.second = vec2(velocity.x, -1 * velocity.y);
       particle.first += particle.second;
     } else {
@@ -57,7 +49,37 @@ void GasContainer::CheckWallContact() {
 }
 
 void GasContainer::CheckParticleCollision() {
+  for (std::pair<vec2, vec2> &particle : particles_) {
+    for (std::pair<vec2, vec2> &particle_compare : particles_) {
+      if (ParticlesAreColliding(particle, particle_compare)) {
+        //DO CALCULATION
+      }
+    }
+  }
+}
 
+bool GasContainer::ParticlesAreColliding(std::pair<vec2, vec2> p1, std::pair<vec2, vec2> p2) {
+  bool collides = false;
+  bool go_same_dir = false;
+  if (std::abs(glm::distance(p1.first, p2.first)) <= 2 * kRadius) {
+    collides = true;
+  }
+  if (glm::dot((p1.second - p2.second),(p1.first - p2.first)) < 0) {
+    go_same_dir = true;
+  }
+  if (collides && go_same_dir) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+std::pair<vec2, vec2> GasContainer::CalculateVelocityAfterCollision(std::pair<vec2, vec2> p1, std::pair<vec2, vec2> p2) {
+  float dot_product_p1 = glm::dot((p1.first - p2.first),(p1.second - p2.second));
+  double magnitude_p1 = std::pow((p1.first - p2.first).length(),2);
+  float dot_product_over_magnitude_p1 = dot_product_p1 / magnitude_p1;
+  vec2 right_side_p1 = dot_product_over_magnitude_p1 * (p1.first - p2.first);
+  vec2 final_v_p1 = p1.second - right_side_p1;
 }
 
 std::pair<glm::vec2, glm::vec2> GasContainer::GenerateRandomParticle() {
