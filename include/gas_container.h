@@ -12,10 +12,7 @@ namespace idealgas {
  */
 class GasContainer {
  public:
-  /**
-   * TODO: Add more parameters to this constructor, and add documentation.
-   */
-  GasContainer();
+  GasContainer(int num_particles);
 
   /**
    * Displays the container walls and the current positions of the particles.
@@ -28,12 +25,21 @@ class GasContainer {
    */
   void AdvanceOneFrame();
 
+  void CheckWallContact(std::vector<std::pair<glm::vec2, glm::vec2>> particles);
+
+  std::pair<glm::vec2, glm::vec2> GenerateRandomParticle();
+
+  double GenerateRandomDouble(double lower_bound, double upper_bound);
+
  private:
-  /**
-   * This variable is just for the purposes of demonstrating how to make a shape move
-   * across a screen. Please remove it once you start working on your code.
-   */
-  int dummy_variable_ = 0;
+  //int dummy_variable_;
+  std::vector<std::pair<glm::vec2, glm::vec2>> particles_;
+  //vec2 p1_position = vec2(200, 200);
+  //vec2 p1_velocity = vec2(1.2, 0);
+  int kSmallestRadius = 10;
+  //int kBiggestRadius = 15;
+  vec2 kFirstPoint = vec2(100, 100);
+  vec2 kSecondPoint = vec2(500, 400);
 };
 
 }  // namespace idealgas
