@@ -55,3 +55,48 @@ TEST_CASE("Collides with walls") {
     REQUIRE(vec2(104,104) == container.GetParticles()[0].first);
   }
 }
+
+TEST_CASE("Particle collisions") {
+  SECTION("Standard collision horizontal") {
+    GasContainer container(0);
+    std::pair<glm::vec2, glm::vec2> test_p1(vec2(200,200),vec2(1,0));
+    std::pair<glm::vec2, glm::vec2> test_p2(vec2(208,200),vec2(-1,0));
+    container.AddParticles(test_p1);
+    container.AddParticles(test_p2);
+    container.AdvanceOneFrame();
+    REQUIRE(vec2(-1, 0) == container.GetParticles()[0].second);
+    REQUIRE(vec2(1,0) == container.GetParticles()[1].second);
+  }
+  SECTION("Standard collision vertical") {
+    GasContainer container(0);
+    std::pair<glm::vec2, glm::vec2> test_p1(vec2(200,200),vec2(0,1));
+    std::pair<glm::vec2, glm::vec2> test_p2(vec2(200,209),vec2(0,-1));
+    container.AddParticles(test_p1);
+    container.AddParticles(test_p2);
+    container.AdvanceOneFrame();
+    REQUIRE(vec2(0,-1) == container.GetParticles()[0].second);
+    REQUIRE(vec2(0,1) == container.GetParticles()[1].second);
+  }
+  SECTION("Standard collision diagonal") {
+    GasContainer container(0);
+    std::pair<glm::vec2, glm::vec2> test_p1(vec2(200,200),vec2(1,1));
+    std::pair<glm::vec2, glm::vec2> test_p2(vec2(208,208),vec2(-1,-1));
+    container.AddParticles(test_p1);
+    container.AddParticles(test_p2);
+    container.AdvanceOneFrame();
+    REQUIRE(std::abs(-1 - container.GetParticles()[0].second.x) < ci::EPSILON_VALUE);
+    REQUIRE(std::abs(-1 - container.GetParticles()[0].second.y) < ci::EPSILON_VALUE);
+    REQUIRE(std::abs(1 - container.GetParticles()[1].second.x) < ci::EPSILON_VALUE);
+    REQUIRE(std::abs(1 - container.GetParticles()[1].second.y) < ci::EPSILON_VALUE);
+  }
+  SECTION("Collision distance but going opposite directions") {
+    GasContainer container(0);
+    std::pair<glm::vec2, glm::vec2> test_p1(vec2(200,200),vec2(-1,0));
+    std::pair<glm::vec2, glm::vec2> test_p2(vec2(208,200),vec2(1,0));
+    container.AddParticles(test_p1);
+    container.AddParticles(test_p2);
+    container.AdvanceOneFrame();
+    REQUIRE(vec2(-1, 0) == container.GetParticles()[0].second);
+    REQUIRE(vec2(1,0) == container.GetParticles()[1].second);
+  }
+}
