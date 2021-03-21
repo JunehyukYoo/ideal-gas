@@ -122,7 +122,7 @@ float GasContainer::SpeedMagnitude(vec2 velocity) const {
   return sqrt(pow(velocity.x, 2) + pow(velocity.y, 2));
 }
 
-bool GasContainer::ParticlesAreColliding(Particle p1, Particle p2) const{
+bool GasContainer::ParticlesAreColliding(Particle p1, Particle p2) const {
   bool collides = false;
   bool go_same_dir = false;
   if (std::abs(glm::distance(p1.GetPosition(), p2.GetPosition())) <= 2 * kDefaultRadius) {
@@ -201,9 +201,5 @@ float GasContainer::RandomRadiusPicker() const {
 
 std::vector<Particle> GasContainer::GetParticles() {
   return particles_;
-}
-
-void GasContainer::AddParticles(Particle particle) {
-  particles_.push_back(particle);
 }
 }  // namespace idealgas
