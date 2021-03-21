@@ -89,10 +89,10 @@ void GasContainer::DrawGraphs() const {
     ci::gl::drawString(kPossibleColorsString[i] + " = " + std::to_string(graphs_[i].GetMass()) + " mass", vec2(graphs_[i].GetFirstPoint().x + 40, graphs_[i].GetFirstPoint().y + 10));
     ci::gl::drawString("Speed",vec2(graphs_[i].GetFirstPoint().x + 80, graphs_[i].GetSecondPoint().y - 12));
     //ci::gl::drawString("Frequency",vec2(graphs_[i].GetFirstPoint().x + 10, graphs_[i].GetSecondPoint().y - 60));
-    ci::gl::drawLine(vec2(graphs_[i].GetFirstPoint().x + 20, graphs_[i].GetSecondPoint().y - 20), vec2(graphs_[i].GetFirstPoint().x + 180, graphs_[i].GetSecondPoint().y - 20));
+    ci::gl::drawLine(vec2(graphs_[i].GetFirstPoint().x + 20, graphs_[i].GetSecondPoint().y - 20), vec2(graphs_[i].GetFirstPoint().x + 200, graphs_[i].GetSecondPoint().y - 20));
     ci::gl::drawLine(vec2(graphs_[i].GetFirstPoint().x + 20, graphs_[i].GetSecondPoint().y - 20), vec2(graphs_[i].GetFirstPoint().x + 20, graphs_[i].GetFirstPoint().y + 20));
     std::vector<int> histogram_nums = NumParticlesGoingCertainSpeed(graphs_[i]);
-    for (size_t j = 0; j < histogram_nums.size() - 1; j++) {
+    for (size_t j = 0; j < histogram_nums.size(); j++) {
       ci::gl::drawSolidRect(ci::Rectf(vec2(graphs_[i].GetFirstPoint().x + 20 + 18 * j, graphs_[i].GetSecondPoint().y - 20 - 12 * histogram_nums[j]), vec2(graphs_[i].GetFirstPoint().x + 20 + 18 * (j + 1), graphs_[i].GetSecondPoint().y - 20)));
     }
     ci::gl::drawString("Max Vel =" + std::to_string(SpeedMagnitude(graphs_[i].GetMaxVel())) ,vec2(graphs_[i].GetFirstPoint().x + 90, graphs_[i].GetSecondPoint().y - 110));
@@ -105,7 +105,7 @@ std::vector<int> GasContainer::NumParticlesGoingCertainSpeed(Graph graph) const 
   for (size_t i = 0; i < graph.GetDeltaX(); i++) {
     int current_num = 0;
     for (Particle particle : particles_) {
-      if (SpeedMagnitude(particle.GetVelocity()) >= (delta_x * i) && SpeedMagnitude(particle.GetVelocity()) < (delta_x * (i + 1))) {
+      if ((SpeedMagnitude(particle.GetVelocity()) > (delta_x * i) && SpeedMagnitude(particle.GetVelocity()) <= (delta_x * (i + 1))) && particle.GetColor() == ColorPicker(graph.GetMass())) {
         current_num++;
       }
     }
@@ -165,7 +165,7 @@ Particle GasContainer::GenerateRandomParticle() {
 
 void GasContainer::InitializeGraphs() {
   for (size_t i = 0; i < kPossibleMasses.size(); i++) {
-    Graph graph = Graph(vec2(650, kFirstPoint.y + 200 * i), vec2(850, kFirstPoint.y + 200 * (i + 1)), vec2(0, 0), kDefaultDeltaX, kPossibleMasses[i]);
+    Graph graph = Graph(vec2(650, kFirstPoint.y + 200 * i), vec2(870, kFirstPoint.y + 200 * (i + 1)), vec2(0, 0), kDefaultDeltaX, kPossibleMasses[i]);
     graphs_.push_back(graph);
   }
 }
