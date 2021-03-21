@@ -23,10 +23,6 @@ void GasContainer::Display() const {
   //Draws container
   ci::gl::color(ci::Color(kBorderColor));
   ci::gl::drawStrokedRect(ci::Rectf(kFirstPoint, kSecondPoint));
-  //Draws color to mass string
-  for (size_t i = 0; i < kPossibleMasses.size(); i++) {
-    ci::gl::drawString(kPossibleColorsString[i] + " = " + std::to_string(kPossibleMasses[i]) + " mass", vec2(kFirstPoint.x + 150 * i, kSecondPoint.y + 40));
-  }
   DrawGraphs();
 }
 
@@ -169,7 +165,7 @@ Particle GasContainer::GenerateRandomParticle() {
 
 void GasContainer::GenerateGraphs() {
   for (size_t i = 0; i < kPossibleMasses.size(); i++) {
-    Graph graph = Graph(vec2(700, kFirstPoint.y + 200 * i), vec2(900, kFirstPoint.y + 200 * (i + 1)), vec2(0, 0), kDefaultDeltaX, kPossibleMasses[i]);
+    Graph graph = Graph(vec2(650, kFirstPoint.y + 200 * i), vec2(850, kFirstPoint.y + 200 * (i + 1)), vec2(0, 0), kDefaultDeltaX, kPossibleMasses[i]);
     graphs_.push_back(graph);
   }
 }
