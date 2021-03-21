@@ -65,20 +65,53 @@ namespace idealgas {
          */
         Particle GenerateRandomParticle();
 
-        void GenerateGraphs();
+        /**
+         * Initializes the graphs.
+         */
+        void InitializeGraphs();
 
+        /**
+         * Draws the graphs on the BasicApp.
+         */
         void DrawGraphs() const;
 
+        /**
+         * Updates relevant graph information. Called every frame.
+         */
         void UpdateGraphInformation();
 
+        /**
+         * Calculates the magnitude of a velocity vector for comparison purposes.
+         * @param velocity The velocity to convert.
+         * @return A scalar magnitude.
+         */
         float SpeedMagnitude(vec2 velocity) const;
 
+        /**
+         * Creates a list of integers, each integer representing the number of particles with velocities within a
+         * certain range. Used to create the histogram bars.
+         * @param graph The respective graph.
+         * @return The list of numbers per histogram bar.
+         */
         std::vector<int> NumParticlesGoingCertainSpeed(Graph graph) const;
 
+        /**
+         * Picks a random mass out of a list.
+         * @return The mass.
+         */
         float RandomMassPicker() const;
 
+        /**
+         * Picks a random radius out of a list.
+         * @return The list.
+         */
         float RandomRadiusPicker() const;
 
+        /**
+         * Picks a random color out of a list respective to the particles' mass.
+         * @param mass The particles' mass.
+         * @return The color.
+         */
         ci::Color ColorPicker(float mass) const;
 
         /**
@@ -94,6 +127,12 @@ namespace idealgas {
          * @return the list of all particles.
          */
         std::vector<Particle> GetParticles();
+
+        /**
+         * Adds particle to list. For testing purposes.
+         * @param particle The particle to add to list.
+         */
+        void AddParticle(Particle particle);
 
 
     private:

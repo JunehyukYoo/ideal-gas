@@ -9,7 +9,7 @@ GasContainer::GasContainer(int num_particles) {
   for (size_t i = 0; i < num_particles; i++) {
     particles_.push_back(GenerateRandomParticle());
   }
-  GenerateGraphs();
+  InitializeGraphs();
 }
 
 GasContainer::GasContainer() {}
@@ -163,7 +163,7 @@ Particle GasContainer::GenerateRandomParticle() {
   return Particle(position, velocity, mass, kDefaultRadius, color);
 }
 
-void GasContainer::GenerateGraphs() {
+void GasContainer::InitializeGraphs() {
   for (size_t i = 0; i < kPossibleMasses.size(); i++) {
     Graph graph = Graph(vec2(650, kFirstPoint.y + 200 * i), vec2(850, kFirstPoint.y + 200 * (i + 1)), vec2(0, 0), kDefaultDeltaX, kPossibleMasses[i]);
     graphs_.push_back(graph);
@@ -197,5 +197,9 @@ float GasContainer::RandomRadiusPicker() const {
 
 std::vector<Particle> GasContainer::GetParticles() {
   return particles_;
+}
+
+void GasContainer::AddParticle(Particle particle) {
+    particles_.push_back(particle);
 }
 }  // namespace idealgas
