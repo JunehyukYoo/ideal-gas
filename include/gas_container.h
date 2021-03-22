@@ -71,16 +71,6 @@ namespace idealgas {
         void InitializeGraphs();
 
         /**
-         * Draws the graphs on the BasicApp.
-         */
-        void DrawGraphs() const;
-
-        /**
-         * Updates relevant graph information. Called every frame.
-         */
-        void UpdateGraphInformation();
-
-        /**
          * Calculates the magnitude of a velocity vector for comparison purposes.
          * @param velocity The velocity to convert.
          * @return A scalar magnitude.
@@ -88,12 +78,9 @@ namespace idealgas {
         float SpeedMagnitude(vec2 velocity) const;
 
         /**
-         * Creates a list of integers, each integer representing the number of particles with velocities within a
-         * certain range. Used to create the histogram bars.
-         * @param graph The respective graph.
-         * @return The list of numbers per histogram bar.
+         * Updates relevant graph information. Called every frame.
          */
-        std::vector<int> NumParticlesGoingCertainSpeed(Graph graph) const;
+        void UpdateGraphInformation();
 
         /**
          * Picks a random mass out of a list.
