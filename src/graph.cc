@@ -35,7 +35,7 @@ void Graph::SetMaxVel(vec2 max_vel) {
     max_vel_ = max_vel;
 }
 
-void Graph::DrawGraphs(std::vector<Particle> particles, std::string color) const {
+void Graph::DrawGraphs(std::vector<Particle> particles, std::string color, std::vector<int> num_of_particles, size_t i) const {
     ci::gl::drawStrokedRect(ci::Rectf(first_point_, second_point_));
     ci::gl::drawString(color + " = " + std::to_string(mass_) + " mass", vec2(first_point_.x + 40, first_point_.y + 10));
     ci::gl::drawString("Speed",vec2(first_point_.x + 80, second_point_.y - 12));
@@ -46,7 +46,13 @@ void Graph::DrawGraphs(std::vector<Particle> particles, std::string color) const
     for (size_t j = 0; j < histogram_nums.size(); j++) {
         ci::gl::drawSolidRect(ci::Rectf(vec2(first_point_.x + 20 + 18 * j, second_point_.y - 20 - 12 * histogram_nums[j]), vec2(first_point_.x + 20 + 18 * (j + 1), second_point_.y - 20)));
     }
-    ci::gl::drawString("Max Vel =" + std::to_string(SpeedMagnitude(max_vel_)) ,vec2(first_point_.x + 90, second_point_.y - 130));
+    ci::gl::drawString("Max Vel =" + std::to_string(SpeedMagnitude(max_vel_)) ,vec2(first_point_.x + 90, second_point_.y - 150));
+    ci::gl::drawString("Num of particles =" + std::to_string(num_of_particles[i]), vec2(first_point_.x + 90, second_point_.y - 160));
+    ci::gl::pushModelMatrix();
+    ci::gl::translate(first_point_.x + 10, first_point_.y + 120);
+    ci::gl::rotate(-1* M_PI_2);
+    ci::gl::drawString("Frequency", vec2(0, 0));
+    ci::gl::popModelMatrix();
 }
 
 std::vector<int> Graph::NumParticlesGoingCertainSpeed(std::vector<Particle> particles) const {

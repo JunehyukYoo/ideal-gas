@@ -6,8 +6,22 @@ namespace idealgas {
 using glm::vec2;
 
 GasContainer::GasContainer(int num_particles) {
+  for (size_t i = 0; i < kPossibleMasses.size(); i++) {
+    num_particles_per_mass_.push_back(0);
+  }
   for (size_t i = 0; i < num_particles; i++) {
-    particles_.push_back(GenerateRandomParticle());
+    Particle particle = GenerateRandomParticle();
+    particles_.push_back(particle);
+    std::pair<bool, int> exists = {false, -1};
+    for (size_t index = 0; index < kPossibleMasses.size(); index++) {
+        if (kPossibleMasses[index] == particle.GetMass()) {
+            exists = {true, index};
+            break;
+        }
+    }
+    if (exists.first) {
+        num_particles_per_mass_[exists.second] += 1;
+    }
   }
   InitializeGraphs();
 }
@@ -22,7 +36,7 @@ void GasContainer::Display() const {
   ci::gl::color(ci::Color(kBorderColor));
   ci::gl::drawStrokedRect(ci::Rectf(kFirstPoint, kSecondPoint));
   for (size_t i = 0; i < graphs_.size(); i++) {
-      graphs_[i].DrawGraphs(particles_, kPossibleColorsString[i]);
+      graphs_[i].DrawGraphs(particles_, kPossibleColorsString[i], num_particles_per_mass_, i);
   }
 }
 
@@ -38,24 +52,36 @@ void GasContainer::CheckWallContact() {
     vec2 velocity = particle.GetVelocity();
     if ((position.x <= kFirstPoint.x + particle.GetRadius() || position.x >= kSecondPoint.x - particle.GetRadius()) &&
         (position.y <= kFirstPoint.y + particle.GetRadius() || position.y >= kSecondPoint.y - particle.GetRadius())) {
-      vec2 new_vel = vec2(-1 * velocity.x, -1 * velocity.y);
-      particle.SetVelocity(new_vel);
-      vec2 new_pos = position + new_vel;
-      particle.SetPosition(new_pos);
+      CornerCollision(position, velocity, particle);
     } else if (position.x <= kFirstPoint.x + kDefaultRadius || position.x >= kSecondPoint.x - kDefaultRadius) {
-      vec2 new_vel = vec2(-1 * velocity.x, velocity.y);
-      vec2 new_pos = position + new_vel;
-      particle.SetVelocity(new_vel);
-      particle.SetPosition(new_pos);
+      EastWestWallCollision(position, velocity, particle);
     } else if (position.y <= kFirstPoint.y + kDefaultRadius || position.y >= kSecondPoint.y - kDefaultRadius) {
-      vec2 new_vel = vec2(velocity.x, -1 * velocity.y);
-      vec2 new_pos = position + new_vel;
-      particle.SetVelocity(new_vel);
-      particle.SetPosition(new_pos);
+      NorthSouthWallCollision(position, velocity, particle);
     } else {
       particle.SetPosition(position + velocity);
     }
   }
+}
+
+void GasContainer::CornerCollision(const vec2 position, const vec2 velocity, Particle &particle) {
+  vec2 new_vel = vec2(-1 * velocity.x, -1 * velocity.y);
+  particle.SetVelocity(new_vel);
+  vec2 new_pos = position + new_vel;
+  particle.SetPosition(new_pos);
+}
+
+void GasContainer::EastWestWallCollision(const vec2 position, const vec2 velocity, Particle &particle) {
+  vec2 new_vel = vec2(-1 * velocity.x, velocity.y);
+  vec2 new_pos = position + new_vel;
+  particle.SetVelocity(new_vel);
+  particle.SetPosition(new_pos);
+}
+
+void GasContainer::NorthSouthWallCollision(const vec2 position, const vec2 velocity, Particle &particle) {
+  vec2 new_vel = vec2(velocity.x, -1 * velocity.y);
+  vec2 new_pos = position + new_vel;
+  particle.SetVelocity(new_vel);
+  particle.SetPosition(new_pos);
 }
 
 void GasContainer::CheckParticleCollision() {
@@ -83,7 +109,7 @@ void GasContainer::UpdateGraphInformation() {
   }
 }
 
-bool GasContainer::ParticlesAreColliding(Particle p1, Particle p2) const {
+bool GasContainer::ParticlesAreColliding(const Particle p1, const Particle p2) const {
   bool collides = false;
   bool go_same_dir = false;
   if (std::abs(glm::distance(p1.GetPosition(), p2.GetPosition())) <= 2 * kDefaultRadius) {
@@ -99,7 +125,7 @@ bool GasContainer::ParticlesAreColliding(Particle p1, Particle p2) const {
   }
 }
 
-std::pair<vec2, vec2> GasContainer::CalculateVelocityAfterCollision(Particle p1, Particle p2) const{
+std::pair<vec2, vec2> GasContainer::CalculateVelocityAfterCollision(const Particle p1, const Particle p2) const{
   float dot_product_p1 = glm::dot((p1.GetPosition() - p2.GetPosition()),(p1.GetVelocity() - p2.GetVelocity()));
   double magnitude_p1 = static_cast<float>(std::pow(glm::length(p1.GetPosition() - p2.GetPosition()),2));
   float dot_product_over_magnitude_p1 = dot_product_p1 / magnitude_p1;
@@ -117,7 +143,7 @@ std::pair<vec2, vec2> GasContainer::CalculateVelocityAfterCollision(Particle p1,
   return {final_v_p1, final_v_p2};
 }
 
-Particle GasContainer::GenerateRandomParticle() {
+Particle GasContainer::GenerateRandomParticle() const {
   double mass = RandomMassPicker();
   double radius = RandomRadiusPicker();
   vec2 position = vec2(GenerateRandomDouble(kFirstPoint.x + radius, kSecondPoint.x - radius),
@@ -164,11 +190,16 @@ float GasContainer::RandomRadiusPicker() const {
   return kPossibleRadii[static_cast<int>(GenerateRandomDouble(0, kPossibleRadii.size()))];
 }
 
-std::vector<Particle> GasContainer::GetParticles() {
+std::vector<Particle> GasContainer::GetParticles() const {
   return particles_;
 }
 
 void GasContainer::AddParticle(Particle particle) {
-    particles_.push_back(particle);
+  particles_.push_back(particle);
+}
+
+double GasContainer::Round(float value, int decimal_places) const {
+    const double multiplier = std::pow(10.0, decimal_places);
+    return std::ceil(value * multiplier) / multiplier;
 }
 }  // namespace idealgas

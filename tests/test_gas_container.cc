@@ -80,14 +80,14 @@ TEST_CASE("Particle collisions") {
     SECTION("Standard collision diagonal") {
         GasContainer container;
         idealgas::Particle test_p1(vec2(200,200),vec2(1,1), 1, 10, ci::Color("red"));
-        idealgas::Particle test_p2(vec2(200,208),vec2(-1,-1), 1, 10, ci::Color("red"));
+        idealgas::Particle test_p2(vec2(208,208),vec2(-1,-1), 1, 10, ci::Color("red"));
         container.AddParticle(test_p1);
         container.AddParticle(test_p2);
         container.AdvanceOneFrame();
-        REQUIRE(std::abs(1.4 - container.GetParticles()[0].GetVelocity().x) < ci::EPSILON_VALUE);
-        REQUIRE(std::abs(0.2 - container.GetParticles()[0].GetVelocity().y) < ci::EPSILON_VALUE);
-        REQUIRE(std::abs(1 - container.GetParticles()[1].GetVelocity().x) < ci::EPSILON_VALUE);
-        REQUIRE(std::abs(1 - container.GetParticles()[1].GetVelocity().y) < ci::EPSILON_VALUE);
+        REQUIRE(-1.0 == container.Round(container.GetParticles()[0].GetVelocity().x, 2));
+        REQUIRE(-1.0 == container.Round(container.GetParticles()[0].GetVelocity().y, 2));
+        REQUIRE(1.01 == container.Round(container.GetParticles()[1].GetVelocity().x, 2));
+        REQUIRE(1.01 == container.Round(container.GetParticles()[1].GetVelocity().x, 2));
     }
     SECTION("Collision distance but going opposite directions") {
         GasContainer container;
