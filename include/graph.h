@@ -44,6 +44,18 @@ private:
     vec2 max_vel_;
     vec2 first_point_;
     vec2 second_point_;
+    vec2 title_label_;
+    vec2 y_axis_point_;
+    vec2 x_axis_point_;
+    vec2 origin_;
+    vec2 x_axis_label_;
+    vec2 max_vel_display_point_;
+    vec2 num_particles_display_point_;
+    float change_in_x_per_bar_;
+    const int kAxisMargin = 20;
+    const int kTextMargin = 12;
+    const int kMarginPerParticle = 12;
+    const int kInfoDisplayMargin = 90;
 };
 
 }  // namespace idealgas

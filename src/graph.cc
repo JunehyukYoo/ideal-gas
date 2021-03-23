@@ -9,6 +9,14 @@ Graph::Graph(vec2 first_point, vec2 second_point, vec2 max_vel, int delta_x, flo
     max_vel_ = max_vel;
     delta_x_ = delta_x;
     mass_ = mass;
+    origin_ = vec2(first_point.x + kAxisMargin, second_point.y - kAxisMargin);
+    x_axis_point_ = vec2(second_point.x - kAxisMargin, second_point.y - kAxisMargin);
+    y_axis_point_ = vec2(first_point.x + kAxisMargin, first_point.y + kAxisMargin);
+    x_axis_label_ = vec2(first_point.x + 4 * kAxisMargin, second_point.y - kTextMargin);
+    title_label_ = vec2(first_point.x + 2 * kAxisMargin, first_point.y + kTextMargin);
+    change_in_x_per_bar_ = (x_axis_point_.x - origin_.x) / delta_x;
+    max_vel_display_point_ = vec2(first_point.x + kInfoDisplayMargin, first_point.y + 3 * kAxisMargin);
+    num_particles_display_point_ = vec2(first_point.x + kInfoDisplayMargin, first_point.y + 2 * kAxisMargin);
 }
 
 vec2 Graph::GetMaxVel() const {
@@ -37,17 +45,17 @@ void Graph::SetMaxVel(vec2 max_vel) {
 
 void Graph::DrawGraphs(std::vector<Particle> particles, std::string color, std::vector<int> num_of_particles, size_t i) const {
     ci::gl::drawStrokedRect(ci::Rectf(first_point_, second_point_));
-    ci::gl::drawString(color + " = " + std::to_string(mass_) + " mass", vec2(first_point_.x + 40, first_point_.y + 10));
-    ci::gl::drawString("Speed",vec2(first_point_.x + 80, second_point_.y - 12));
-    //ci::gl::drawString("Frequency",vec2(first_point_.x + 10, second_point_.y - 60));
-    ci::gl::drawLine(vec2(first_point_.x + 20, second_point_.y - 20), vec2(first_point_.x + 200, second_point_.y - 20));
-    ci::gl::drawLine(vec2(first_point_.x + 20, second_point_.y - 20), vec2(first_point_.x + 20, first_point_.y + 20));
+    ci::gl::drawString(color + " = " + std::to_string(mass_) + " mass", title_label_);
+    ci::gl::drawString("Speed", x_axis_label_);
+    ci::gl::drawLine(origin_, x_axis_point_);
+    ci::gl::drawLine(origin_, y_axis_point_);
     std::vector<int> histogram_nums = NumParticlesGoingCertainSpeed(particles);
     for (size_t j = 0; j < histogram_nums.size(); j++) {
-        ci::gl::drawSolidRect(ci::Rectf(vec2(first_point_.x + 20 + 18 * j, second_point_.y - 20 - 12 * histogram_nums[j]), vec2(first_point_.x + 20 + 18 * (j + 1), second_point_.y - 20)));
+        ci::gl::drawSolidRect(ci::Rectf(vec2(first_point_.x + kAxisMargin + change_in_x_per_bar_ * j, second_point_.y - kAxisMargin - kMarginPerParticle * histogram_nums[j]),
+                                           vec2(first_point_.x + kAxisMargin + change_in_x_per_bar_ * (j + 1), second_point_.y - kAxisMargin)));
     }
-    ci::gl::drawString("Max Vel =" + std::to_string(SpeedMagnitude(max_vel_)) ,vec2(first_point_.x + 90, second_point_.y - 150));
-    ci::gl::drawString("Num of particles =" + std::to_string(num_of_particles[i]), vec2(first_point_.x + 90, second_point_.y - 160));
+    ci::gl::drawString("Max Vel =" + std::to_string(SpeedMagnitude(max_vel_)), max_vel_display_point_);
+    ci::gl::drawString("Num of particles =" + std::to_string(num_of_particles[i]), num_particles_display_point_);
     ci::gl::pushModelMatrix();
     ci::gl::translate(first_point_.x + 10, first_point_.y + 120);
     ci::gl::rotate(-1* M_PI_2);
