@@ -12,7 +12,7 @@ Graph::Graph(vec2 first_point, vec2 second_point, vec2 max_vel, int delta_x, flo
     origin_ = vec2(first_point.x + kAxisMargin, second_point.y - kAxisMargin);
     x_axis_point_ = vec2(second_point.x - kAxisMargin, second_point.y - kAxisMargin);
     y_axis_point_ = vec2(first_point.x + kAxisMargin, first_point.y + kAxisMargin);
-    x_axis_label_ = vec2(first_point.x + 4 * kAxisMargin, second_point.y - kTextMargin);
+    x_axis_label_ = vec2(first_point.x + 5 * kAxisMargin, second_point.y - kTextMargin);
     title_label_ = vec2(first_point.x + 2 * kAxisMargin, first_point.y + kTextMargin);
     change_in_x_per_bar_ = (x_axis_point_.x - origin_.x) / delta_x;
     max_vel_display_point_ = vec2(first_point.x + kInfoDisplayMargin, first_point.y + 3 * kAxisMargin);

@@ -3,10 +3,11 @@
 #include <gas_container.h>
 
 using idealgas::GasContainer;
+using idealgas::Particle;
 
 TEST_CASE("No wall no collision") {
     GasContainer container;
-    idealgas::Particle test_particle(vec2(200,200),vec2(5,5), 5, 10, ci::Color("red"));
+    Particle test_particle(vec2(200,200),vec2(5,5), 5, 10, ci::Color("red"));
     container.AddParticle(test_particle);
     container.AdvanceOneFrame();
     REQUIRE(vec2(5,5) == container.GetParticles()[0].GetVelocity());
@@ -16,7 +17,7 @@ TEST_CASE("No wall no collision") {
 TEST_CASE("Collides with walls") {
     SECTION("Hits North wall") {
         GasContainer container;
-        idealgas::Particle test_particle(vec2(200,101),vec2(0,-5), 5, 10, ci::Color("red"));
+        Particle test_particle(vec2(200,101),vec2(0,-5), 5, 10, ci::Color("red"));
         container.AddParticle(test_particle);
         container.AdvanceOneFrame();
         REQUIRE(vec2(0,5) == container.GetParticles()[0].GetVelocity());
@@ -24,7 +25,7 @@ TEST_CASE("Collides with walls") {
     }
     SECTION("Hits South wall") {
         GasContainer container;
-        idealgas::Particle test_particle(vec2(200,599),vec2(0,5), 5, 10, ci::Color("red"));
+        Particle test_particle(vec2(200,599),vec2(0,5), 5, 10, ci::Color("red"));
         container.AddParticle(test_particle);
         container.AdvanceOneFrame();
         REQUIRE(vec2(0,-5) == container.GetParticles()[0].GetVelocity());
@@ -32,7 +33,7 @@ TEST_CASE("Collides with walls") {
     }
     SECTION("Hits East wall") {
         GasContainer container;
-        idealgas::Particle test_particle(vec2(599,200),vec2(5,0), 5, 10, ci::Color("red"));
+        Particle test_particle(vec2(599,200),vec2(5,0), 5, 10, ci::Color("red"));
         container.AddParticle(test_particle);
         container.AdvanceOneFrame();
         REQUIRE(vec2(-5,0) == container.GetParticles()[0].GetVelocity());
@@ -40,7 +41,7 @@ TEST_CASE("Collides with walls") {
     }
     SECTION("Hits West wall") {
         GasContainer container;
-        idealgas::Particle test_particle(vec2(101,200),vec2(-5,0), 5, 10, ci::Color("red"));
+        Particle test_particle(vec2(101,200),vec2(-5,0), 5, 10, ci::Color("red"));
         container.AddParticle(test_particle);
         container.AdvanceOneFrame();
         REQUIRE(vec2(5,0) == container.GetParticles()[0].GetVelocity());
@@ -48,7 +49,7 @@ TEST_CASE("Collides with walls") {
     }
     SECTION("Collides in the corner") {
         GasContainer container;
-        idealgas::Particle test_particle(vec2(101,101),vec2(-3,-3), 5, 10, ci::Color("red"));
+        Particle test_particle(vec2(101,101),vec2(-3,-3), 5, 10, ci::Color("red"));
         container.AddParticle(test_particle);
         container.AdvanceOneFrame();
         REQUIRE(vec2(3,3) == container.GetParticles()[0].GetVelocity());
@@ -59,8 +60,8 @@ TEST_CASE("Collides with walls") {
 TEST_CASE("Particle collisions") {
     SECTION("Standard collision horizontal") {
         GasContainer container;
-        idealgas::Particle test_p1(vec2(200,200),vec2(1,0), 5, 10, ci::Color("red"));
-        idealgas::Particle test_p2(vec2(208,200),vec2(-1,0), 5, 10, ci::Color("red"));
+        Particle test_p1(vec2(200,200),vec2(1,0), 5, 10, ci::Color("red"));
+        Particle test_p2(vec2(208,200),vec2(-1,0), 5, 10, ci::Color("red"));
         container.AddParticle(test_p1);
         container.AddParticle(test_p2);
         container.AdvanceOneFrame();
@@ -69,8 +70,8 @@ TEST_CASE("Particle collisions") {
     }
     SECTION("Standard collision vertical") {
         GasContainer container;
-        idealgas::Particle test_p1(vec2(200,200),vec2(0,1), 5, 10, ci::Color("red"));
-        idealgas::Particle test_p2(vec2(200,209),vec2(0,-1), 5, 10, ci::Color("red"));
+        Particle test_p1(vec2(200,200),vec2(0,1), 5, 10, ci::Color("red"));
+        Particle test_p2(vec2(200,209),vec2(0,-1), 5, 10, ci::Color("red"));
         container.AddParticle(test_p1);
         container.AddParticle(test_p2);
         container.AdvanceOneFrame();
@@ -79,8 +80,8 @@ TEST_CASE("Particle collisions") {
     }
     SECTION("Standard collision diagonal") {
         GasContainer container;
-        idealgas::Particle test_p1(vec2(200,200),vec2(1,1), 1, 10, ci::Color("red"));
-        idealgas::Particle test_p2(vec2(208,208),vec2(-1,-1), 1, 10, ci::Color("red"));
+        Particle test_p1(vec2(200,200),vec2(1,1), 1, 10, ci::Color("red"));
+        Particle test_p2(vec2(208,208),vec2(-1,-1), 1, 10, ci::Color("red"));
         container.AddParticle(test_p1);
         container.AddParticle(test_p2);
         container.AdvanceOneFrame();
@@ -91,8 +92,8 @@ TEST_CASE("Particle collisions") {
     }
     SECTION("Collision distance but going opposite directions") {
         GasContainer container;
-        idealgas::Particle test_p1(vec2(200,200),vec2(-1,0), 5, 10, ci::Color("red"));
-        idealgas::Particle test_p2(vec2(208,200),vec2(1,0), 5, 10, ci::Color("red"));
+        Particle test_p1(vec2(200,200),vec2(-1,0), 5, 10, ci::Color("red"));
+        Particle test_p2(vec2(208,200),vec2(1,0), 5, 10, ci::Color("red"));
         container.AddParticle(test_p1);
         container.AddParticle(test_p2);
         container.AdvanceOneFrame();
